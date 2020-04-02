@@ -1,0 +1,43 @@
+version: '3'
+services:
+  cli:
+    image: wordpress:cli-2
+    volumes: 
+      #Update folder path for plugin/theme development
+      - wordpress:/var/www/html
+      - .:/var/www/html/wp-content/plugins/plugin-dev:cached
+    # Overrides default command so things don't shut down straight away.
+    command: /bin/sh -c "while sleep 1000; do :; done"
+  
+  wordpress:
+    image: wordpress:5.3
+    ports:
+      - 8080:80
+    
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wp_user
+      WORDPRESS_DB_PASSWORD: wp_pass
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DEBUG: 1
+
+    volumes:
+      #Update folder path for plugin/theme development
+      - wordpress:/var/www/html
+      - ../:/var/www/html/wp-content/plugins/plugin-dev
+  db:
+    image: mariadb:10
+  
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wp_user
+      MYSQL_PASSWORD: wp_pass
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    ports:
+      - 3306:3306
+    volumes:
+      - data:/var/lib/mysql
+
+volumes:
+  wordpress:
+  data:
