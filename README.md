@@ -1,2 +1,2 @@
 # vscode-devcontainer-wordpress
-VSCode devcontainer for WordPress development
+VSCode devcontainer configuration for WordPress development
