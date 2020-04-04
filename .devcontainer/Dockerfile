@@ -36,5 +36,4 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 		&& php composer-setup.php --quiet --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /var/www/html
-#install & configure wordpress
-RUN wp core download
+USER www-data
