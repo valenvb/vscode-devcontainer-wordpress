@@ -6,7 +6,7 @@ RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 #We don't inherit from it becase it has a VOLUME that causes issues
 RUN set -eux; \
 	apt-get update; \
-	apt-get install -y --no-install-recommends ghostscript git less ssh-client; \
+	apt-get install -y --no-install-recommends ghostscript git less ssh-client mariadb-client; \
 	rm -rf /var/lib/apt/lists/*
 
 # install the PHP extensions, including XDebug
@@ -30,7 +30,8 @@ RUN set -ex; \
 	; \
 	pecl install imagick-3.4.4; \
   	pecl install xdebug-2.8.1; \
-	docker-php-ext-enable imagick xdebug;
+	docker-php-ext-enable imagick xdebug;\
+	rm -rf /var/lib/apt/lists/*
 
 #XDebug settings
 RUN echo "[XDebug]\nxdebug.remote_enable = 1\nxdebug.remote_autostart = 1" > $PHP_INI_DIR/conf.d/xdebug.ini
