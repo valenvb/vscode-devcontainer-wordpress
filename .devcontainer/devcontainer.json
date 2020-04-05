@@ -29,7 +29,7 @@
 	// "shutdownAction": "none",
 
 	// Uncomment the next line to run commands after the container is created - for example installing git.
-	//"postCreateCommand": "/var/www/html/wp-content/plugins/plugin-dev/.devcontainer/wp-setup.sh",
+	"postCreateCommand": ".devcontainer/wp-setup.sh",
 
 	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode"
