@@ -17,7 +17,8 @@ Anything placed in the `plugins` folder (single files or folders) will be copied
 
 ## Included Tools
 
-- XDebug, configured for use with VSCode
+- XDebug
 - WP-CLI
 - Composer
-- NodeJS (Soon)
+- NodeJS (TODO)
+- PHP/WordPress extensions for VSCode (see `devconatainer.json`)
