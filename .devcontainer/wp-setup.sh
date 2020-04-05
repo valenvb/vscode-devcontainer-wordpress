@@ -6,7 +6,7 @@ ADMIN_USER=admin
 ADMIN_PASS=password
 ADMIN_EMAIL="admin@localhost.com"
 #Space-separated list of plugin ID's to install and activate
-PLUGINS="advanced-custom-fields custom-post-type-ui"
+PLUGINS="advanced-custom-fields"
 
 #Set to true to wipe out and reset your wordpress install (on next container rebuild)
 WP_RESET=true
@@ -38,7 +38,7 @@ if [ ! -f wp-config.php ]; then
 
     cp -r plugins/* /var/www/html/wp-content/plugins
     for p in plugins/*; do
-        wp plugin activate $p
+        wp plugin activate $(basename $p)
     done
 
 else
