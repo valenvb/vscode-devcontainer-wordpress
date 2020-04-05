@@ -4,14 +4,16 @@ services:
     build: ./
     ports:
       - 8080:80
-    
+    depends_on:
+      - db
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: wp_user
       WORDPRESS_DB_PASSWORD: wp_pass
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DEBUG: 1
-
+    links:
+      - db
     volumes:
       #Update folder path for plugin/theme development
       - wordpress:/var/www/html
