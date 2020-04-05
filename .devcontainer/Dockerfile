@@ -69,5 +69,5 @@ RUN mkdir -p /var/www/html/wp-content/plugins/plugin-dev; \
 	mkdir -p /var/www/html/wp-content/themes/theme-dev;
 
 USER root
-RUN chown -R www-data:www-data /var/www/html
-RUN chmod g+sw -R /var/www/html
+RUN chown -R www-data:www-data /var/www/html/
+RUN chmod g+sw -R /var/www/html/
