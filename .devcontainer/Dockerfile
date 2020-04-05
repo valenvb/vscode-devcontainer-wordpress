@@ -70,4 +70,5 @@ RUN mkdir -p /var/www/html/wp-content/plugins/plugin-dev; \
 
 USER root
 RUN chown -R www-data:www-data /var/www/html/
-RUN chmod g+sw -R /var/www/html/
+RUN chmod g+w -R /var/www/html/
+RUN find /var/www/html/ -type d -exec chmod g+s {} \;
