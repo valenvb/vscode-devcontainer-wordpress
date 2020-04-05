@@ -2,20 +2,15 @@ FROM php:7.4-apache
 
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
+#Most of this comes directly from the WordPress docker image
+#We don't inherit from it becase it has a VOLUME that causes issues
 RUN set -eux; \
 	apt-get update; \
-	apt-get install -y --no-install-recommends \
-  # Ghostscript is required for rendering PDF previews
-		ghostscript \
-    less \
-	; \
+	apt-get install -y --no-install-recommends ghostscript git less ssh-client; \
 	rm -rf /var/lib/apt/lists/*
 
-# install the PHP extensions we need (https://make.wordpress.org/hosting/handbook/handbook/server-environment/#php-extensions)
+# install the PHP extensions, including XDebug
 RUN set -ex; \
-	\
-	savedAptMark="$(apt-mark showmanual)"; \
-	\
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
 		libfreetype6-dev \
@@ -24,7 +19,6 @@ RUN set -ex; \
 		libpng-dev \
 		libzip-dev \
 	; \
-	\
 	docker-php-ext-configure gd --with-freetype --with-jpeg; \
 	docker-php-ext-install -j "$(nproc)" \
 		bcmath \
@@ -35,22 +29,11 @@ RUN set -ex; \
 		zip \
 	; \
 	pecl install imagick-3.4.4; \
-  pecl install xdebug-2.8.1; \
-	docker-php-ext-enable imagick xdebug; \
-	\
-# reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
-	apt-mark auto '.*' > /dev/null; \
-	apt-mark manual $savedAptMark; \
-	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
-		| awk '/=>/ { print $3 }' \
-		| sort -u \
-		| xargs -r dpkg-query -S \
-		| cut -d: -f1 \
-		| sort -u \
-		| xargs -rt apt-mark manual; \
-	\
-	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-	rm -rf /var/lib/apt/lists/*
+  	pecl install xdebug-2.8.1; \
+	docker-php-ext-enable imagick xdebug;
+
+#XDebug settings
+RUN echo "[XDebug]\nxdebug.remote_enable = 1\nxdebug.remote_autostart = 1" > $PHP_INI_DIR/conf.d/xdebug.ini
 
 #WP recommended PHP settings
 RUN { \
@@ -66,7 +49,25 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
-WORKDIR /var/www/html
+#install Composer
+WORKDIR /tmp
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+		&& php composer-setup.php --quiet --install-dir=/usr/local/bin --filename=composer
 
+#add vscode user
+RUN useradd -ms /bin/bash vscode \
+		&& usermod -aG www-data vscode
+
+WORKDIR /var/www/html
 USER www-data
 
+#Download WP
+RUN wp core download
+
+#add dirs for plugin and theme dev
+RUN mkdir -p /var/www/html/wp-content/plugins/plugin-dev; \
+	mkdir -p /var/www/html/wp-content/themes/theme-dev;
+
+USER root
+RUN chown -R www-data:www-data /var/www/html
+RUN chmod g+sw -R /var/www/html
