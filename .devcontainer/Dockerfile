@@ -1,6 +1,8 @@
 FROM php:7.4-apache
 
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+# Enable .htaccess files
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride all/' /etc/apache2/apache2.conf
 
 #Most of this comes directly from the WordPress docker image
 #We don't inherit from it becase it has a VOLUME that causes issues
