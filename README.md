@@ -17,14 +17,13 @@ Anything placed in the `plugins` folder (single files or folders) will be copied
 
 ## Included Tools
 
-- XDebug
+- XDebug, configured 
 - WP-CLI
 - Composer
-- NodeJS (TODO)
+- NodeJS
 - PHP/WordPress extensions for VSCode (see `devconatainer.json`)
 
 ## TODO
 
-- add Node.JS to the image for theme and block building
 - provide a preconfigured launch.json for PHP debugging
 - theme auto-install
