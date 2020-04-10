@@ -11,6 +11,11 @@ RUN set -eux; \
 	apt-get install -y --no-install-recommends ghostscript git less ssh-client mariadb-client; \
 	rm -rf /var/lib/apt/lists/*
 
+# install Node.js
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - ; \
+	apt-get install -y nodejs; \
+	rm -rf /var/lib/apt/lists/*;
+
 # install the PHP extensions, including XDebug
 RUN set -ex; \
 	apt-get update; \
